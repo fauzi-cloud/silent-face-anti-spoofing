@@ -1,0 +1,8 @@
+torch
+torchvision
+opencv-python
+matplotlib
+numpy
+tensorboard
+seaborn
+plyer
