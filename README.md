@@ -46,4 +46,4 @@ Test Live Detection :
 python live_detection.py
 
 Train Detection :
-python train_detection_auto.py
+python train_detection.py
