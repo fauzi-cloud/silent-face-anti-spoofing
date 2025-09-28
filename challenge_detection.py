@@ -10,7 +10,6 @@ import mediapipe as mp
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
-
 model = models.mobilenet_v3_large(weights=None)
 num_features = model.classifier[3].in_features
 model.classifier[3] = torch.nn.Linear(num_features, 2)
@@ -19,29 +18,23 @@ model.load_state_dict(torch.load("results/anti_spoof_model.pth", map_location=de
 model = model.to(device)
 model.eval()
 
-
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
 ])
 
-
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.6, min_tracking_confidence=0.6)
 
-
 cap = cv2.VideoCapture(0)
-
 
 circle_center = (320, 240)  
 circle_radius = 140         
-
 
 progress = 0
 progress_target = 100
 challenge_done = False
 command = None
-
 
 real_locked = False
 real_counter = 0
@@ -57,7 +50,6 @@ while True:
     h, w, _ = frame.shape
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     results = face_mesh.process(rgb)
-
     
     cv2.circle(frame, circle_center, circle_radius, (255, 255, 255), 2)
     cv2.putText(frame, "Posisikan wajah di tengah lingkaran",
@@ -73,29 +65,24 @@ while True:
             y_min = int(min(ys) * h)
             y_max = int(max(ys) * h)
 
-            
             margin = 30
             x_min = max(0, x_min - margin)
             x_max = min(w, x_max + margin)
             y_min = max(0, y_min - margin)
             y_max = min(h, y_max + margin)
-
             
             face_crop = frame[y_min:y_max, x_min:x_max]
             if face_crop.size == 0:
                 continue
-
             
             face_resized = cv2.resize(face_crop, (224, 224))
             face_rgb = cv2.cvtColor(face_resized, cv2.COLOR_BGR2RGB)
             face_pil = Image.fromarray(face_rgb)
             face_tensor = transform(face_pil).unsqueeze(0).to(device)
-
             
             with torch.no_grad():
                 pred = model(face_tensor)
                 label = torch.argmax(pred, 1).item()
-
             
             if real_locked:
                 label = 1
@@ -107,13 +94,11 @@ while True:
                         print("REAL locked ✅")
                 else:
                     real_counter = 0
-
             
             label_text = "REAL" if label == 1 else "FAKE"
             color = (0, 255, 0) if label == 1 else (0, 0, 255)
             cv2.putText(frame, label_text, (30, 50),
                         cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 3)
-
             
             if label == 1:
                 nose = face_landmarks.landmark[1]
@@ -128,7 +113,6 @@ while True:
 
                     cv2.putText(frame, f"Turn {command}", (200, 80),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 0), 3)
-
                     
                     if command == "LEFT" and nx > circle_center[0] + 40:  
                         progress += 5
@@ -136,7 +120,6 @@ while True:
                         progress += 5
                     else:
                         progress = max(0, progress - 2)
-
                     
                     angle = int(360 * (progress / progress_target))
                     cv2.ellipse(frame, circle_center, (circle_radius, circle_radius),
