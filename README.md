@@ -5,24 +5,18 @@ face_anti_spoofing/
 │ └── real/ # Real Dataset Location
 │
 ├── raw/ # Dir to Save Raw Data Before Extract Frame
-│
-├── models/
-│ └── model.py
 |
 ├── result/ # Dir for Save Result Data Train
-│
-├── utils/
-│ └── visualizer.py
-│
-├── realtime_detection/
 │
 ├── collect_data/
 |
 ├── extract_frame/
 |
-├── live_detection/
+├── live_detection.py
 |
-├── train_detection_auto/
+├── challenge_detection.py
+|
+├── train.py
 │
 ├── requirements.txt
 └── README.md
@@ -45,5 +39,5 @@ python train.py
 Test Live Detection :
 python live_detection.py
 
-Train Detection :
-python train_detection.py
+Test Challenge Detection :
+python challenge_detection.py
