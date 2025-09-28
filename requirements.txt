@@ -6,3 +6,4 @@ numpy
 tensorboard
 seaborn
 plyer
+mediapipe
